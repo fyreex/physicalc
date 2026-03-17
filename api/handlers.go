@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/seuuser/physicalc/internal/algebra"
-	"github.com/seuuser/physicalc/internal/calculus"
-	"github.com/seuuser/physicalc/internal/ode"
-	"github.com/seuuser/physicalc/internal/physics"
+	"github.com/fyreex/physicalc/internal/algebra"
+	"github.com/fyreex/physicalc/internal/calculus"
+	"github.com/fyreex/physicalc/internal/ode"
+	"github.com/fyreex/physicalc/internal/physics"
 )
 
 // --- Helpers ---

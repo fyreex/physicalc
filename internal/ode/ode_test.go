@@ -4,7 +4,7 @@ import (
 	"math"
 	"testing"
 
-	"github.com/seuuser/physicalc/internal/ode"
+	"github.com/fyreex/physicalc/internal/ode"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

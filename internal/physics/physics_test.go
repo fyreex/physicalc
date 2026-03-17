@@ -3,7 +3,7 @@ package physics_test
 import (
 	"testing"
 
-	"github.com/seuuser/physicalc/internal/physics"
+	"github.com/fyreex/physicalc/internal/physics"
 	"github.com/stretchr/testify/assert"
 )
 

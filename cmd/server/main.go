@@ -9,7 +9,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 
-	"github.com/seuuser/physicalc/api"
+	"github.com/fyreex/physicalc/api"
 )
 
 // @title           Physicalc API
