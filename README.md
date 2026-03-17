@@ -1,4 +1,4 @@
-# Physicalc 🧮
+# Physicalc VIBECODED 🧮
 
 > API REST de cálculo científico construída em **Go** com frontend **React**. Implementa algoritmos numéricos do zero — sem bibliotecas matemáticas externas.
 
