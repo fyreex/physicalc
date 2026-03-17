@@ -1,0 +1,31 @@
+version: "3.9"
+ 
+services:
+  # ── API Go ────────────────────────────────────────────────────────────────
+  api:
+    build: .
+    container_name: physicalc-api
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+ 
+  # ── Frontend React ────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: physicalc-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    environment:
+      - VITE_API_URL=http://localhost:8080
+    restart: unless-stopped
