@@ -1,53 +1,55 @@
-// Package calculus implementa métodos numéricos de cálculo diferencial e integral.
 package calculus
 
-import "errors"
+import (
+	"fmt"
+	"math"
+)
 
-// Func é o tipo de uma função matemática f(x).
-type Func func(x float64) float64
+type MathFunc func(x float64) float64
 
-// IntegrateSimpsons calcula a integral definida de f no intervalo [a, b]
-// usando a Regra de Simpson 1/3.
-//
-// Parâmetros:
-//   - f: função a integrar
-//   - a, b: limites do intervalo
-//   - n: número de subintervalos (deve ser par e > 0)
-//
-// Erro é retornado se n for ímpar ou <= 0.
-func IntegrateSimpsons(f Func, a, b float64, n int) (float64, error) {
-	if n <= 0 || n%2 != 0 {
-		return 0, errors.New("n deve ser um número par positivo")
+func GetFunction(name string) (MathFunc, error) {
+	functions := map[string]MathFunc{
+		"x2":    func(x float64) float64 { return x * x },
+		"x3":    func(x float64) float64 { return x * x * x },
+		"sin":   math.Sin,
+		"cos":   math.Cos,
+		"tan":   math.Tan,
+		"exp":   math.Exp,
+		"ln":    math.Log,
+		"sqrt":  math.Sqrt,
+		"1/x":   func(x float64) float64 { return 1.0 / x },
+		"x2+1":  func(x float64) float64 { return x*x + 1 },
+		"sinx2": func(x float64) float64 { return math.Sin(x * x) },
 	}
+	fn, ok := functions[name]
+	if !ok {
+		return nil, fmt.Errorf("funcao '%s' nao encontrada", name)
+	}
+	return fn, nil
+}
 
-	h := (b - a) / float64(n) // largura de cada subintervalo
-	sum := f(a) + f(b)        // f(x0) + f(xn)
-
+func Simpson(f MathFunc, a, b float64, n int) float64 {
+	if n%2 != 0 {
+		n++
+	}
+	h := (b - a) / float64(n)
+	sum := f(a) + f(b)
 	for i := 1; i < n; i++ {
 		x := a + float64(i)*h
 		if i%2 == 0 {
-			sum += 2 * f(x) // coeficiente 2 para pontos pares
+			sum += 2 * f(x)
 		} else {
-			sum += 4 * f(x) // coeficiente 4 para pontos ímpares
+			sum += 4 * f(x)
 		}
 	}
-
-	return (h / 3) * sum, nil
+	return (h / 3) * sum
 }
 
-// IntegrateTrapezoid calcula a integral definida usando a Regra dos Trapézios.
-// Menos preciso que Simpson, mas funciona com qualquer n.
-func IntegrateTrapezoid(f Func, a, b float64, n int) (float64, error) {
-	if n <= 0 {
-		return 0, errors.New("n deve ser positivo")
-	}
-
+func Trapezoid(f MathFunc, a, b float64, n int) float64 {
 	h := (b - a) / float64(n)
-	sum := (f(a) + f(b)) / 2
-
+	sum := f(a) + f(b)
 	for i := 1; i < n; i++ {
-		sum += f(a + float64(i)*h)
+		sum += 2 * f(a+float64(i)*h)
 	}
-
-	return h * sum, nil
+	return (h / 2) * sum
 }

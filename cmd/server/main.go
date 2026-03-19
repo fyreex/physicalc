@@ -20,23 +20,19 @@ import (
 func main() {
 	r := chi.NewRouter()
 
-	// Middlewares
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.RequestID)
 	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins: []string{"http://localhost:3000", "http://localhost:5173"},
+		AllowedOrigins: []string{"*"},
 		AllowedMethods: []string{"GET", "POST", "OPTIONS"},
 		AllowedHeaders: []string{"Content-Type"},
 	}))
 
-	// Registra todas as rotas
 	api.RegisterRoutes(r)
 
 	fmt.Println("🚀 Physicalc rodando em http://localhost:8080")
-	fmt.Println("📖 Swagger UI em  http://localhost:8080/swagger/index.html")
+	fmt.Println("📄 Swagger UI em  http://localhost:8080/swagger/")
 
-	if err := http.ListenAndServe(":8080", r); err != nil {
-		log.Fatalf("Erro ao iniciar servidor: %v", err)
-	}
+	log.Fatal(http.ListenAndServe(":8080", r))
 }

@@ -85,10 +85,10 @@ func classifyMovement(v0, a float64) string {
 
 // ProjectileMotion calcula o movimento de um projétil lançado obliquamente.
 type ProjectileResult struct {
-	MaxHeight    float64 `json:"max_height_m"`     // altura máxima
-	Range        float64 `json:"range_m"`          // alcance horizontal
+	MaxHeight   float64 `json:"max_height_m"`   // altura máxima
+	Range       float64 `json:"range_m"`         // alcance horizontal
 	TimeOfFlight float64 `json:"time_of_flight_s"` // tempo de voo total
-	AngleDeg     float64 `json:"angle_deg"`        // ângulo de lançamento
+	AngleDeg    float64 `json:"angle_deg"`       // ângulo de lançamento
 }
 
 // Projectile calcula as grandezas de um lançamento oblíquo.

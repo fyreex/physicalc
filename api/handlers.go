@@ -287,12 +287,12 @@ func KinematicsHandler(w http.ResponseWriter, r *http.Request) {
 // DynamicsHandler calcula grandezas dinâmicas.
 func DynamicsHandler(w http.ResponseWriter, r *http.Request) {
 	var req struct {
-		Mass         float64 `json:"mass"`         // kg
-		Force        float64 `json:"force"`        // N
-		Displacement float64 `json:"displacement"` // m
-		Velocity     float64 `json:"velocity"`     // m/s
-		Height       float64 `json:"height"`       // m
-		Gravity      float64 `json:"gravity"`      // m/s² (padrão: 9.81)
+		Mass         float64 `json:"mass"`          // kg
+		Force        float64 `json:"force"`         // N
+		Displacement float64 `json:"displacement"`  // m
+		Velocity     float64 `json:"velocity"`      // m/s
+		Height       float64 `json:"height"`        // m
+		Gravity      float64 `json:"gravity"`       // m/s² (padrão: 9.81)
 	}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		writeError(w, http.StatusBadRequest, "JSON inválido")

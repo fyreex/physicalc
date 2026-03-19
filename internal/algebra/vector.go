@@ -1,4 +1,3 @@
-// Package algebra implementa operações de álgebra linear.
 package algebra
 
 import (
@@ -6,96 +5,106 @@ import (
 	"math"
 )
 
-// Vector representa um vetor n-dimensional.
-type Vector []float64
-
-// Len retorna a dimensão do vetor.
-func (v Vector) Len() int { return len(v) }
-
-// Add soma dois vetores componente a componente.
-// Retorna erro se os vetores tiverem dimensões diferentes.
-func Add(a, b Vector) (Vector, error) {
-	if len(a) != len(b) {
-		return nil, errors.New("vetores devem ter a mesma dimensão")
-	}
-	result := make(Vector, len(a))
-	for i := range a {
-		result[i] = a[i] + b[i]
-	}
-	return result, nil
+type Vector struct {
+	Components []float64
+	Dim        int
 }
 
-// Scale multiplica o vetor por um escalar.
-func Scale(v Vector, scalar float64) Vector {
-	result := make(Vector, len(v))
-	for i, val := range v {
-		result[i] = val * scalar
-	}
-	return result
+func NewVector(components []float64) Vector {
+	return Vector{Components: components, Dim: len(components)}
 }
 
-// Dot calcula o produto escalar (dot product) de dois vetores.
-// Resultado é um escalar: a·b = Σ aᵢ·bᵢ
-func Dot(a, b Vector) (float64, error) {
-	if len(a) != len(b) {
-		return 0, errors.New("vetores devem ter a mesma dimensão")
+func checkSameDim(a, b Vector) error {
+	if a.Dim != b.Dim {
+		return errors.New("vetores devem ter a mesma dimensão")
+	}
+	return nil
+}
+
+func (v Vector) Add(other Vector) (Vector, error) {
+	if err := checkSameDim(v, other); err != nil {
+		return Vector{}, err
+	}
+	result := make([]float64, v.Dim)
+	for i := range result {
+		result[i] = v.Components[i] + other.Components[i]
+	}
+	return NewVector(result), nil
+}
+
+func (v Vector) Sub(other Vector) (Vector, error) {
+	if err := checkSameDim(v, other); err != nil {
+		return Vector{}, err
+	}
+	result := make([]float64, v.Dim)
+	for i := range result {
+		result[i] = v.Components[i] - other.Components[i]
+	}
+	return NewVector(result), nil
+}
+
+func (v Vector) Scale(s float64) Vector {
+	result := make([]float64, v.Dim)
+	for i := range result {
+		result[i] = v.Components[i] * s
+	}
+	return NewVector(result)
+}
+
+func (v Vector) Dot(other Vector) (float64, error) {
+	if err := checkSameDim(v, other); err != nil {
+		return 0, err
 	}
 	sum := 0.0
-	for i := range a {
-		sum += a[i] * b[i]
+	for i := range v.Components {
+		sum += v.Components[i] * other.Components[i]
 	}
 	return sum, nil
 }
 
-// Norm calcula o módulo (magnitude) do vetor: ||v|| = √(Σ vᵢ²)
-func Norm(v Vector) float64 {
+func (v Vector) Cross(other Vector) (Vector, error) {
+	if v.Dim != 3 || other.Dim != 3 {
+		return Vector{}, errors.New("produto vetorial requer vetores 3D")
+	}
+	a, b := v.Components, other.Components
+	return NewVector([]float64{
+		a[1]*b[2] - a[2]*b[1],
+		a[2]*b[0] - a[0]*b[2],
+		a[0]*b[1] - a[1]*b[0],
+	}), nil
+}
+
+func (v Vector) Norm() float64 {
 	sum := 0.0
-	for _, val := range v {
-		sum += val * val
+	for _, c := range v.Components {
+		sum += c * c
 	}
 	return math.Sqrt(sum)
 }
 
-// Normalize retorna o vetor unitário (módulo = 1) na mesma direção.
-func Normalize(v Vector) (Vector, error) {
-	n := Norm(v)
+func (v Vector) Normalize() (Vector, error) {
+	n := v.Norm()
 	if n == 0 {
-		return nil, errors.New("não é possível normalizar o vetor nulo")
+		return Vector{}, errors.New("não é possível normalizar o vetor zero")
 	}
-	return Scale(v, 1/n), nil
+	return v.Scale(1 / n), nil
 }
 
-// Cross calcula o produto vetorial (cross product) de dois vetores 3D.
-// Resultado é um vetor perpendicular a ambos.
-func Cross(a, b Vector) (Vector, error) {
-	if len(a) != 3 || len(b) != 3 {
-		return nil, errors.New("produto vetorial é definido apenas para vetores 3D")
-	}
-	return Vector{
-		a[1]*b[2] - a[2]*b[1],
-		a[2]*b[0] - a[0]*b[2],
-		a[0]*b[1] - a[1]*b[0],
-	}, nil
-}
-
-// Angle calcula o ângulo em radianos entre dois vetores.
-// Usa: cos(θ) = (a·b) / (||a|| · ||b||)
-func Angle(a, b Vector) (float64, error) {
-	dot, err := Dot(a, b)
+func (v Vector) AngleDeg(other Vector) (float64, error) {
+	dot, err := v.Dot(other)
 	if err != nil {
 		return 0, err
 	}
-	na, nb := Norm(a), Norm(b)
-	if na == 0 || nb == 0 {
-		return 0, errors.New("ângulo indefinido para vetor nulo")
+	denom := v.Norm() * other.Norm()
+	if denom == 0 {
+		return 0, errors.New("ângulo indefinido com vetor zero")
 	}
-	// Clamp para evitar erro de arredondamento no acos
-	cos := dot / (na * nb)
-	if cos > 1 {
-		cos = 1
+	cosTheta := dot / denom
+	if cosTheta > 1 {
+		cosTheta = 1
 	}
-	if cos < -1 {
-		cos = -1
+	if cosTheta < -1 {
+		cosTheta = -1
 	}
-	return math.Acos(cos), nil
+	return math.Acos(cosTheta) * (180 / math.Pi), nil
 }
