@@ -11,8 +11,6 @@
 
 ## 📸 Preview
 
-> _Tire um screenshot da aplicação rodando e salve em `docs/preview.png`_
->
 > ![screenshot](docs/preview.png)
 
 ---
