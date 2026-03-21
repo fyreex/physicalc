@@ -203,5 +203,5 @@ MIT — veja [LICENSE](LICENSE) para detalhes.
 ---
 
 <div align="center">
-  Feito com Go 🐹 por <a href="https://github.com/SEU_USUARIO">@SEU_USUARIO</a>
+  Feito com Go por <a href="https://github.com/SEU_USUARIO">@fyreex</a>
 </div>
